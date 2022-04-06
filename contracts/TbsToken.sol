@@ -32,10 +32,6 @@ contract TbsToken {
         totalSupply = _initialSupply;
     }
 
-    // Transfer 
-    // Transfer event 
-    // return boolean
-
     function transfer(address _to,uint256 _value ) public returns(bool success){
 
         // Trigger exception if account does not have enough token to transfer 
