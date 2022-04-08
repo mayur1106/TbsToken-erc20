@@ -38,4 +38,13 @@ contract TbsTokenSale {
         // Trigger sell event 
         emit Sell(msg.sender,_numberOfTokens);
     }
+    // end sale 
+    function endSale() public {
+        // Only admin can do this 
+        require(msg.sender == admin);
+        // Transfer amount of token in sale back to the admin 
+        require(tokenContract.transfer(admin, tokenContract.balanceOf(address(this))));
+        // Destroy Contract 
+        selfdestruct(payable(address(this)));
+    }
 }

@@ -56,5 +56,24 @@ contract("TbsTokenSale",function(accounts){
         }).then(assert.fail).catch(error=>{
             assert(error.message.indexOf('revert')>=0,'Not available')
         })
-    })
+    });
+    it("ends the sale ",()=>{
+        return TbsToken.deployed().then((instance)=>{
+            tokenInstance = instance;
+            return TbsTokenSale.deployed()
+        }).then((instance)=>{
+            tokenSaleInstance = instance;
+            return tokenSaleInstance.endSale({from:buyer});
+        }).then(assert.fail).catch((err)=>{
+            assert(err.message.indexOf("revert") >= 0 ,'Must be admin to end the sale')
+            return tokenSaleInstance.endSale({from:admin});
+        }).then(reciept=>{
+            return tokenInstance.balanceOf(admin)
+        }).then(balance=>{
+            assert.equal(balance.toNumber(),1999990,'returns all tokens to admin')
+            return web3.eth.getCode(tokenSaleInstance.address);
+        }).then((price)=>{
+            assert.equal(price,'0x','token price reset');
+        })
+    });
 });
