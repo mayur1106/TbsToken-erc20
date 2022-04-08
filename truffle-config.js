@@ -72,11 +72,12 @@ module.exports = {
     // production: true    // Treats this network as if it was a public net. (default: false)
     // }
   },
-  plugins: ["solidity-coverage"],
+  plugins: ["solidity-coverage", "truffle-contract-size"],
   // Set default mocha options here, use special reporters etc.
   mocha: {
-    // timeout: 100000
-  },
+    timeout: 25000,
+    reporter: 'eth-gas-reporter'
+},
 
   // Configure your compilers
   compilers: {

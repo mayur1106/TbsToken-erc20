@@ -2,7 +2,7 @@
 pragma solidity >=0.4.22 <0.9.0;
 import "./TbsToken.sol";
 contract TbsTokenSale {
-    address admin;
+    address public admin;
     TbsToken public tokenContract;
     uint256 public tokenPrice;
     uint256 public tokenSold;
@@ -20,30 +20,30 @@ contract TbsTokenSale {
 
     // multiply function
     function multiply(uint x,uint y) internal pure returns(uint z){
-        require(y == 0|| (z=x*y)/y==x);
+        require(y == 0|| (z=x*y)/y==x,"Safe Math ! Values can not be multiplied");
     }
 
     // Buy Token 
-    function buyTokens(uint256 _numberOfTokens) public payable {
+    function buyTokens(uint256 _numberOfTokens) external payable {
 
         // Require that value is equal to tokens 
-        require( msg.value == multiply(_numberOfTokens,tokenPrice));
+        require( msg.value == multiply(_numberOfTokens,tokenPrice),"Amount is not enough to buy the tokens");
         // Require that contract has enough tokens 
-        require(tokenContract.balanceOf(address(this)) >= _numberOfTokens);
-        require(tokenContract.transfer(msg.sender, _numberOfTokens));
+        require(tokenContract.balanceOf(address(this)) >= _numberOfTokens,"Smart contract having less tokens than to transfer");
+        tokenSold += _numberOfTokens;
+        emit Sell(msg.sender,_numberOfTokens);
+        require(tokenContract.transfer(msg.sender, _numberOfTokens),"Transfer is not successful");
         // require that transfer successfull
 
         // Keep the track of number of token sold 
-        tokenSold += _numberOfTokens;
         // Trigger sell event 
-        emit Sell(msg.sender,_numberOfTokens);
     }
     // end sale 
-    function endSale() public {
+    function endSale() external  {
         // Only admin can do this 
-        require(msg.sender == admin);
+        require(msg.sender == admin,"Account is not admin");
         // Transfer amount of token in sale back to the admin 
-        require(tokenContract.transfer(admin, tokenContract.balanceOf(address(this))));
+        require(tokenContract.transfer(admin, tokenContract.balanceOf(address(this))),"Failed to transfer remaining tokens to the admin");
         // Destroy Contract 
         selfdestruct(payable(address(this)));
     }
