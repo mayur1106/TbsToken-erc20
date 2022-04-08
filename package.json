@@ -45,7 +45,7 @@
     "dev:coverage": "npx truffle run coverage --network coverage --solcoverjs ./.solcover.js",
     "dev:contract-size": "npx truffle run contract-size",
     "dev:docgen": "npx solidity-docgen -i ./contracts -o ./docs -t docgen --solc-module solc -H docgen/helpers.js",
-    "dev:slither": "slither . --config-file slither-config.json --print function-summary",
+    "dev:slither": "slither . --config-file slither-config.json",
     "prettier:fix": "npx prettier --write \"contracts/**/*.sol\"",
     "prettier:check": "npx prettier --check \"contracts/**/*.sol\"",
     "postinstall": "npm run compile && npm run generate-abi",
