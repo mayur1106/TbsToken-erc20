@@ -38,8 +38,8 @@ contract("TbsTokenSale",function(accounts){
         }).then((reciept)=>{
             assert.equal(reciept.logs.length,1)
             assert.equal(reciept.logs[0].event,'Sell')
-            assert.equal(reciept.logs[0].args._buyer,buyer)
-            assert.equal(reciept.logs[0].args._amount,numberOfTokens)
+            assert.equal(reciept.logs[0].args.buyer,buyer)
+            assert.equal(reciept.logs[0].args.amount,numberOfTokens)
             return tokenSaleInstance.tokenSold()
         }).then((amount)=>{
             assert.equal(amount.toNumber(),numberOfTokens)
@@ -50,11 +50,11 @@ contract("TbsTokenSale",function(accounts){
         }).then((balance)=>{
             assert.equal(balance.toNumber(),tokenAvailable-numberOfTokens);
             return tokenSaleInstance.buyTokens(numberOfTokens,{from:buyer,value:1})
+        }).then(assert.fail).catch(err=>{
+            assert(err.message.indexOf('revert') >=0 ,'msg.value must be equal to number of tokens in wei')
+            return tokenSaleInstance.buyTokens(800000,{from:buyer,value:numberOfTokens})
         }).then(assert.fail).catch(error=>{
-            assert(error.message.indexOf('revert')>=0,'msg.value must be equal to number of tokens in wei')
-            return tokenSaleInstance.buyTokens(700000,{from:buyer,value:numberOfTokens * tokenPrice})
-        }).then(assert.fail).catch(error=>{
-            assert(error.message.indexOf('revert')>=0,'Not vailable')
+            assert(error.message.indexOf('revert')>=0,'Not available')
         })
     })
 });
